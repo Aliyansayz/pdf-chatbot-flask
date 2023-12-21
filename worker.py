@@ -40,7 +40,7 @@ def process_document(document_list, multiple = None ):
         for page in pages: 
             texts = text_splitter.split_documents(page)
             document.append(texts)
-        db = Chroma.from_documents(documents=documents, llm_embeddings)
+        db = Chroma.from_documents(documents, llm_embeddings)
     
     # Create a vector store from the document chunks
     retriever = client.as_retriever(search_type="similarity", search_kwargs={"k": 2})
