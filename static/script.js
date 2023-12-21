@@ -97,7 +97,7 @@ const populateBotResponse = async (userMessage) => {
     });
 
     $("#file-upload").on("change", async function () {
-        const files = this.files;
+        const files = Array.from(this.files)
         // const formData = new FormData();
     
       await showBotLoadingAnimation();
