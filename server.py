@@ -2,7 +2,8 @@ import logging
 import os
 from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS
-import worker  # Import the worker module
+import worker 
+from worker import * # Import the worker module
 
 # Initialize Flask app and CORS
 app = Flask(__name__)
@@ -32,25 +33,20 @@ def process_message_route():
 def process_document_route():
     # Check if a file was uploaded
     print(request.files)
-    if  not request.files:
+    if 'file' not in request.files:
         return jsonify({
             "botResponse": "It seems like the file was not uploaded correctly, can you try "
                            "again. If the problem persists, try using a different file"
         }), 400
+    else:
+        files_path = []
+        files = request.files['file']  # Extract the uploaded file from the request
+        for fyle in files: 
+            files_path.append(fyle.filename)     
+        document_path = merge_pdfs(pdf_list= files_path)
+        # Process the document using the worker module
+        worker.process_document(document_path = document_path)
     
-    files = request.files.getlist("file")
-    document_list = []
-    for i, file in enumerate(files, start=1):
-        if file.filename.endswith('.pdf'):
-            file_path = file.filename
-            file.save(file_path)
-            document_list.append(file_path)
-            
-
-    # Process the document using the worker module
-    worker.process_document(document_list = document_list, multiple = True )
-    
-
     # Return a success message as JSON
     return jsonify({
         "botResponse": "Thank you for providing your PDF document. I have analyzed it, so now you can ask me any "
