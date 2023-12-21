@@ -31,18 +31,25 @@ def process_message_route():
 @app.route('/process-document', methods=['POST'])
 def process_document_route():
     # Check if a file was uploaded
-    if 'file' not in request.files:
+    print(request.files)
+    if  not request.files:
         return jsonify({
             "botResponse": "It seems like the file was not uploaded correctly, can you try "
                            "again. If the problem persists, try using a different file"
         }), 400
+    
+    files = request.files.getlist("file")
+    document_list = []
+    for i, file in enumerate(files, start=1):
+        if file.filename.endswith('.pdf'):
+            file_path = file.filename
+            file.save(file_path)
+            document_list.append(file_path)
+            
 
-    file = request.files['file']  # Extract the uploaded file from the request
-
-    file_path = file.filename  # Define the path where the file will be saved
-    file.save(file_path)  # Save the file
-
-    worker.process_document(file_path)  # Process the document using the worker module
+    # Process the document using the worker module
+    worker.process_document(document_list = document_list, multiple = True )
+    
 
     # Return a success message as JSON
     return jsonify({
