@@ -9,7 +9,9 @@ body {
   background-color: #121717;
   color: #c9c9c9;
 }
+/* .accordion accordion-flush{
 
+} */
 #chat-window {
   position: relative;
   height: 70vh;
@@ -72,7 +74,11 @@ body {
   height: auto;
 }
 
-#send-button {
+.btn .fa-microphone {
+    color: #007bff;
+}
+
+#send-button, #speak-button {
   border: none;
   font: inherit;
   background-color: transparent;
@@ -83,6 +89,7 @@ body {
   font-size: 24px;
   display: flex;
 }
+
 
 #reset-button {
   border: none;
