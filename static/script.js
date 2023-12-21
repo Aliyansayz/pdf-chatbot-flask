@@ -11,7 +11,6 @@ async function showBotLoadingAnimation() {
   $(".loading-animation")[1].style.display = "inline-block";
   document.getElementById('send-button').disabled = true;
 }
-
 function hideBotLoadingAnimation() {
   $(".loading-animation")[1].style.display = "none";
   if(!isFirstMessage){
@@ -27,7 +26,6 @@ async function showUserLoadingAnimation() {
 function hideUserLoadingAnimation() {
   $(".loading-animation")[0].style.display = "none";
 }
-
 
 const processUserMessage = async (userMessage) => {
   let response = await fetch(baseUrl + "/process-message", {
@@ -82,7 +80,7 @@ const populateBotResponse = async (userMessage) => {
   if (isFirstMessage) {
     response = { botResponse: "Hello there! I'm your friendly data assistant, ready to answer any questions regarding your data. Could you please upload a PDF file for me to analyze?"};
     uploadButtonHtml = `
-        <input type="file" id="file-upload" accept=".pdf" hidden>
+        <input type="file" id="file-upload" accept=".pdf" hidden name="file[]" multiple="">
         <button id="upload-button" class="btn btn-primary btn-sm">Upload File</button>
     `;
 
@@ -99,15 +97,23 @@ const populateBotResponse = async (userMessage) => {
     });
 
     $("#file-upload").on("change", async function () {
-      const file = this.files[0];
-
+        const files = this.files;
+        // const formData = new FormData();
+    
       await showBotLoadingAnimation();
 
       // Create a new FormData instance
       const formData = new FormData();
 
       // Append the file to the FormData instance
-      formData.append('file', file);
+    //   formData.append('file', file);
+    
+      // Iterate over each file in the FileList
+      for (let i = 0; i < files.length; i++) {
+        // Append each file to the FormData instance
+        formData.append('file' + i, files[i]);
+    }
+
 
       // Now send this data to /process-document endpoint
       let response = await fetch(baseUrl + "/process-document", {
