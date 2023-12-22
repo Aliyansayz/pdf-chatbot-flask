@@ -75,10 +75,6 @@ def process_prompt(prompt):
     # Return the model's response
     return result['answer']
 
-def get_id(pages):
-    idz = []
-    for i in range(len(pages)):
-        idz.append(f'id{i+1}')
-    return idz
+
 # Initialize the language model
 init_llm()
