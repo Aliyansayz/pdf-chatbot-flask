@@ -6,6 +6,60 @@ const botRepeatButtonIDToIndexMap = {};
 const userRepeatButtonIDToRecordingMap = {};
 const baseUrl = window.location.origin
 
+// _____________SPEECH RECOGINITION ___________________
+
+const speakButton = document.getElementById('speak-button');
+const messageInput = document.getElementById('message-input');
+let recognition;
+
+speakButton.addEventListener('click', () => {
+  if ('webkitSpeechRecognition' in window) {
+    // Browser supports Speech Recognition API
+    startStopRecognition();
+  } else {
+    // Browser doesn't support Speech Recognition API
+    alert('Sorry, your browser does not support speech recognition.');
+  }
+});
+
+function startStopRecognition() {
+  if (recognition) {
+    // Stop recording if already active
+    recognition.stop();
+    speakButton.textContent = 'Start Recording';
+  } else {
+    // Start recording
+    recognition = new webkitSpeechRecognition();
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.lang = 'en-US'; // Adjust language as needed
+
+    recognition.onresult = (event) => {
+      const transcript = event.results
+        .map((result) => result[0].transcript)
+        .join('');
+      messageInput.value = transcript;
+    };
+
+    recognition.onerror = (event) => {
+      console.error('Speech recognition error:', event);
+      alert('Speech recognition failed. Please try again.');
+      speakButton.textContent = 'Start Recording';
+    };
+
+    recognition.onend = () => {
+      recognition = null;
+      speakButton.textContent = 'Start Recording';
+    };
+
+    speakButton.textContent = 'Stop Recording';
+    recognition.start();
+  }
+}
+
+
+
+
 async function showBotLoadingAnimation() {
   await sleep(200);
   $(".loading-animation")[1].style.display = "inline-block";
