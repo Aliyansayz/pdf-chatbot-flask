@@ -66,12 +66,14 @@ def merge_pdfs(pdf_list):
 
 
 # Function to process a user prompt
+# Function to process a user prompt
 def process_prompt(prompt):
     global conversation_retrieval_chain
     global chat_history
-    # Pass the prompt and the chat history to the conversation_retrieval_chain object
+    # Generate a response to the user's prompt
     result = conversation_retrieval_chain({"question": prompt, "chat_history": chat_history})
-    chat_history.append({"user": prompt, "assistant": result['answer']})  # Append the prompt and the bot's response to the chat history here
+    # Update the chat history
+    chat_history.append((prompt, result["answer"]))
     # Return the model's response
     return result['answer']
 
