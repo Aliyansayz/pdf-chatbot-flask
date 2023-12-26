@@ -1,5 +1,4 @@
 from flask import Flask, render_template_string, request, redirect, url_for
-
 app = Flask(__name__)
 
 # Use a global list for simplicity. In a real application, you'd use a database.
@@ -23,6 +22,7 @@ def home():
             <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
             <!-- Add FontAwesome -->
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+            <script src="./static/script.js"></script>
             <style>
                 .message {
                     margin: 10px;
@@ -63,8 +63,10 @@ def home():
   
                 }
             </style>
+           
         </head>
         <body>
+         
             <div class="container">
                 <h1 class="text-center">Smart Tourist</h1>
                 <p>Hello there! I'm your Smart Tourist guide. I can answer anything, with up-to-date information.</p>
@@ -76,8 +78,8 @@ def home():
                     {% endfor %}
                 </div>
                 <form method="post" class="form-inline justify-content-center">
-                    <input type="text" name="message" class="form-control mb-2 mr-sm-2" placeholder="Type your message here...">
-                    <button id="speak-button"  class="btn btn-primary send"><i class="fa fa-microphone"></i></button>
+                    <input type="text" id="message-input" name="message" class="form-control mb-2 mr-sm-2" placeholder="Type your message here...">
+                    <button type="button" onclick="startConverting();" id="speak-button"  class="btn btn-primary send"><i class="fa fa-microphone"></i></button>
                         </br>
                         <div>
                     <button  name="send" id="send-button" class="btn btn-primary send">
@@ -89,6 +91,7 @@ def home():
                         </div>
                 </form>
             </div>
+
         </body>
     </html>
     """, messages=messages)
