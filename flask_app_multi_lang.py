@@ -181,25 +181,26 @@ def home():
                 
 
             <div class="container">
-                <div class="row">
-                <div>
-                    <input type="file" id="file-upload" accept=".pdf" hidden name="file[]" multiple="">
-                    <button id="upload-button" class="btn btn-primary btn-sm">Upload File</button>
-                </div>
-                <!-- Chat Element -->
-                <div class="col-12">
-                    <div class="chat-element" style="height: 200px; overflow-y: auto;">
-                        {% for message in messages %}
-                            <div class="message-box sender" style="text-align: right;">
-                                <div class="me">{{ message.sender }}</div>
-                            </div>
-                            <div class="message-box bot" style="text-align: left;">
-                                <div class="message-line">{{ message.text }}</div>
-                            </div>
-                        {% endfor %}
+    <div class="row">
+        <div>
+            <input type="file" id="file-upload" accept=".pdf" hidden name="file[]" multiple="">
+            <button id="upload-button" class="btn btn-primary btn-sm">Upload File</button>
+        </div>
+        <!-- Chat Element -->
+        <div class="col-12">
+            <div class="chat-element" style="height: 500px; overflow-y: auto;">
+                {% for message in messages %}
+                    <div class="message-box sender" style="text-align: right;">
+                        <div class="me">{{ message.sender }}</div>
                     </div>
-                </div>
+                    <div class="message-box bot" style="text-align: left;">
+                        <div class="message-line">{{ message.text }}</div>
+                    </div>
+                {% endfor %}
             </div>
+        </div>
+    </div>
+</div>
 
 
                     
