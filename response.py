@@ -20,26 +20,45 @@ import numpy as np
 import re
 
 # ____________________________________________
+WILL BE USED IN FLASK APP IN FRONT END 
 
-embeddings=create_embeddings_load_data()
+answer = save_answer(query, final_doc_list = None )
 
-if option == "Yes":
-                        #Push data to PINECONE
-      final_docs_list=create_docs(resume ,st.session_state['unique_id']) 
+messages.append( { "sender": f"{query}", "response": f"{answer}"   }  ) 
+
+#  for message in message: 
+        # message.sender
+        # message.response
+
+def save_answer(query, final_doc_list = None ):
+  if final_doc_list:
 
       push_to_pinecone("ad12a7c3-b36f-4b48-986e-5157cca233ef","gcp-starter","resume-db",embeddings,final_docs_list) 
-
-      #Fecth relavant documents from PINECONE
-      relevant_docs = similar_docs(job_description,document_count,"ad12a7c3-b36f-4b48-986e-5157cca233ef","gcp-starter","resume-db",embeddings,st.session_state['unique_id'])
-
-
-names =  metadata_filename(relevant_docs )
-scores = get_score(relevant_docs)
-content = docs_content(relevant_docs)
-
-get_summary(relevant_docs[i][0])
-
+      document_count = 3
+      relevant_docs = similar_docs(query, document_count ,"ad12a7c3-b36f-4b48-986e-5157cca233ef","gcp-starter","resume-db",embeddings,st.session_state['unique_id'])
+  else :
+      relevant_docs = similar_docs(query, document_count ,"ad12a7c3-b36f-4b48-986e-5157cca233ef","gcp-starter","resume-db",embeddings,st.session_state['unique_id'])
+    
+  # names =  metadata_filename(relevant_docs )
+  # scores = get_score(relevant_docs)
+  # content = docs_content(relevant_docs)
+  
+  answer = get_answer(query, relevant_docs)
+  return answer 
 # ____________________________________________
+
+from langchain.chains import ConversationalRetrievalChain
+from langchain.chat_models import ChatOpenAI
+from langchain.memory import ConversationSummaryMemory
+
+def get_answer(query, relevant_docs):
+    
+    llm = ChatOpenAI(model_name="gpt-4")
+    memory = ConversationSummaryMemory(llm=llm, memory_key="chat_history", return_messages=True)
+    qa = ConversationalRetrievalChain.from_llm(llm, retriever=retriever, memory=memory)
+    result = qa(question)
+  
+    return result["answer"]
 
 
 # PDF UPLOAD --> INTO TEXT DOCUMENT --> EMBEDDING FUNCTION -->  PUSH INTO PINECONE WITH THEIR EMBEDDINGS
@@ -135,4 +154,15 @@ def metadata_filename( document ) :
    return names
 
 
+
+
+
+
+def  get_summary(current_doc):
+
+    llm = OpenAI(temperature=0 )
+
+    chain = load_summarize_chain(llm, chain_type="map_reduce") 
+    summary = chain.run([current_doc])
+    return summary 
 
